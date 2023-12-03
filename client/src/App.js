@@ -1,14 +1,15 @@
 
 import './App.css';
 import io from 'socket.io-client'
-import { useEffect ,useState  } from 'react';
+import {BrowserRouter,Routes,Route} from 'react-router-dom';
+import LobbyPage from './Pages/LobbyPage';
+
+
 const socket = io.connect('http://localhost:5000');
 
 function App() {
-
-  const[text,setText] = useState("");
-  const[textReceived,setTextReceived] = useState("");
-  const sendMessage= ()=>{
+/* 
+  const sendMessage= () =>{
     socket.emit('send-message',{text});
   }
 
@@ -16,17 +17,17 @@ function App() {
    socket.on('receive-message',(data)=>{
     setTextReceived(data.text)
    })
-  },[socket]);
+  },[socket]); */
 
   return (
     <div className="App">
-      <input placeholder='Message...' onChange={(event)=>{
-        setText(event.target.value);
-      }}/>
-      <button onClick={sendMessage}>Send message</button>
-
-      <h1> Message :  </h1>
-      {textReceived}
+     <BrowserRouter>
+     <Routes>
+      <Route index element = {<LobbyPage socket={socket}/>}></Route>
+      <Route path="/lobby" element = {<LobbyPage socket={socket}/>}></Route>
+     </Routes>
+     </BrowserRouter>
+     
     </div>
   );
 }
