@@ -1,30 +1,36 @@
 
 import TextField from '@mui/material/TextField';
-import io from 'socket.io-client'
+import io from 'socket.io-client';
 import { useState,useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-function CodeBlockPage() {
-    const[code,setCode]=useState("");
-    const[codeReceived,setCodeReceived] = useState("");
+function CodeBlockPage(props) {
 
+  let { id } = useParams();
+
+  const[code,setCode]=useState("");
+  const[codeReceived,setCodeReceived] = useState("");
+  
 
   return (
-    <div>Code Block Page
-    <div className="textfields">
-    <TextField
+    <div>
+
+     
+     <div className="textfields">
+      <TextField
     
-    id="standard-textarea"
-    label="Multiline Placeholder"
-    placeholder="Placeholder"
-     multiline
-    variant="standard"
-    onChange={(event)=>{
+       id="standard-textarea"
+       label="Code"
+       placeholder="Placeholder"
+       multiline
+       variant="standard"
+       onChange={(event)=>{
         setCode(event.target.value);
     }}
-    />
+      />
 
     </div>
-    </div>
+   </div>
   )
 }
 

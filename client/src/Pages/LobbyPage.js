@@ -2,8 +2,20 @@
 
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import CodeBlockPage from './CodeBlockPage';
+import { Link } from "react-router-dom";
+import  CodeBlock from '../Codeblock.json';
+import { useEffect,useState } from 'react';
 
 const LobbyPage = ({socket}) => {
+   const [dataObject,setDataObject]=useState([]);
+  
+    useEffect(()=>{
+        console.log(CodeBlock.codeBlocks);
+        setDataObject(CodeBlock.codeBlocks);
+    },[])
+     
+
     
     return ( 
         <div className="lobbypage">
@@ -11,11 +23,16 @@ const LobbyPage = ({socket}) => {
                 <h1>Lobby Page</h1>
             <div className='buttons'>
             <Stack alignSelf={'center'} spacing={4} direction="row">
-                <Button  variant="contained">Code 1</Button>
-                <Button variant="contained">Code 2</Button>
-                <Button variant="contained">Code 3</Button>
-            </Stack>
-
+               {dataObject.map((blockCard,index)=>{
+                 return<Link
+                  to = {`/codeblock/${blockCard.id}`}>
+                   <Button  variant="contained">{blockCard.title}</Button>
+                    </Link>
+                })
+            
+                }
+            </Stack>           
+        
             </div>   
             </div>
         </div>
