@@ -9,16 +9,6 @@ import CodeBlockPage from './Pages/CodeBlockPage';
 const socket = io.connect('http://localhost:5000');
 
 function App() {
-/* 
-  const sendMessage= () =>{
-    socket.emit('send-message',{text});
-  }
-
-  useEffect(()=>{
-   socket.on('receive-message',(data)=>{
-    setTextReceived(data.text)
-   })
-  },[socket]); */
 
   return (
     <div className="App">

@@ -6,5 +6,5 @@ const codeSchema = new mongoose.Schema({
     code:String,
 })
 
-const CodeSchema = mongoose.model("CodeBlock",codeSchema);
-module.exports =CodeSchema;
+const CodeBlock = mongoose.model("CodeBlock",codeSchema,"CodeBlocks");
+module.exports =CodeBlock;

@@ -4,15 +4,17 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import CodeBlockPage from './CodeBlockPage';
 import { Link } from "react-router-dom";
-import  CodeBlock from '../Codeblock.json';
 import { useEffect,useState } from 'react';
 
 const LobbyPage = ({socket}) => {
    const [dataObject,setDataObject]=useState([]);
-  
+    let data;
     useEffect(()=>{
-        console.log(CodeBlock.codeBlocks);
-        setDataObject(CodeBlock.codeBlocks);
+      
+        fetch('http://localhost:5000/lobby')
+        .then(response =>  response.json())
+        .then(data => setDataObject(data)) 
+        .catch(error => console.error('Error fetching code blocks:', error));
     },[])
      
 
