@@ -61,12 +61,13 @@ function CodeBlockPage({socket}) {
        placeholder="Placeholder"
        multiline
        variant="filled"
-       
+       value={codeReceived}
        onChange={(event)=>{
         setCode(event.target.value);
+        
     }}
       />
-      <h1>The code is :{codeReceived}</h1>
+      
 
     </div>
    </div>

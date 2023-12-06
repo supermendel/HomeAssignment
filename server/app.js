@@ -72,16 +72,14 @@ io.on('connection',(socket)=>{
        isFirstUser = false;
        
       } 
-      socket.join(data.id);
+      socket.join(data.id); //joining the room
       console.log("User joined room " + data.id);
       io.emit('enter-page',isFirstUser);
      
    console.log(`is first user? : ${isFirstUser}`);
    socket.off('enter-page' ,handeEnterPage);
    
-   //const role = isFirstUser ? 'teacher' : 'student';
-   /* socket.emit('role-assigned',(role));
-   console.log(`users count: ${data.users.length}`); */
+
   }
 
   
