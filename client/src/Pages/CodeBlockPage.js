@@ -11,7 +11,8 @@ function CodeBlockPage({socket}) {
   const[dataObject,setDataObject]=useState([]);
   const[code,setCode]=useState("");
   const[codeReceived,setCodeReceived] = useState("");
-  const [users,setUsers] = useState([]);
+  const[isMentor,setIsMentor] = useState(false);
+ 
 
   
   useEffect(()=>{ 
@@ -21,27 +22,28 @@ function CodeBlockPage({socket}) {
     .then(data => setDataObject(data)) 
     .catch(error => console.error('Error fetching code blocks:', error));
     
-   
-    socket.emit('enter-page', {users} )
-    //calls when a user entered the page
-    socket.on('role-assigned',(_role) =>{
-      console.log(_role);
-      
-      console.log(`before set users: ${users}`);
-      setUsers((prevState) =>[...prevState,{role: _role}]);
-      console.log(`after set users: ${users}`);
-
+   //calls when user entered the room
+    socket.emit('enter-page', {id})
+     socket.on('enter-page' ,(isFirst)=>{
+      console.log(isFirst);
+       setIsMentor(isFirst);
+    }) 
       return ()=>{
-        socket.off('role-assigned');
+        //socket.off('role-assigned');
         socket.off('enter-page');
-      }
-    })
+      } 
+    
+    
     
   },[]);
     
+  socket.on('code-received',(code)=>{
+    setCodeReceived(code);
+  })
+ 
   
   useEffect(()=>{
-    socket.emit('code-update',{message : code});
+    socket.emit('code-update',{ code ,id});
   },[code]);
 
   return (
@@ -51,17 +53,20 @@ function CodeBlockPage({socket}) {
      
      <div className="textfields">
       <TextField
-    
+        InputProps={{
+      readOnly: isMentor
+       }} 
        id="standard-textarea"
        label="Code"
        placeholder="Placeholder"
        multiline
-       variant="standard"
+       variant="filled"
        
        onChange={(event)=>{
         setCode(event.target.value);
     }}
       />
+      <h1>The code is :{codeReceived}</h1>
 
     </div>
    </div>

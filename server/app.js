@@ -5,8 +5,6 @@ const CodeBlock = require('./Models/Codeblock');
 const {Server} = require('socket.io');
 const app = express();
 const cors = require('cors');
-const teachers = [];
-const students = [];
 
 app.use(cors());
 
@@ -18,9 +16,11 @@ mongoose.connect('mongodb://localhost:27017/HomeAssignmentDB', {
 
 const db = mongoose.connection;
 
+
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
   console.log('Connected to the MongoDB database');
+
    });
 
 
@@ -32,30 +32,61 @@ const io = new Server(server,{
 });
 
 
-let savedID;
+
+const mentors = [];
 
 
 io.on('connection',(socket)=>{
  console.log(`User Connected : ${socket.id}`);
   
- socket.on('code-update',(data)=>{
-  socket.broadcast.emit('code-received',(data));
-  console.log(data);
-  })
+ socket.on('code-update',handelCodeUpdate)
+  async function handelCodeUpdate(data){
+    try{
+      let doc = await CodeBlock.findOne({id:data.id});
+     console.log(`to update is: ${doc}`); 
+     update = {code: data.code};
+     await doc.updateOne(update);
+     const updatedDoc = await CodeBlock.findOne({ id: data.id });
+     console.log(` updated doc  is: ${updatedDoc}`)
+    }
+   catch(error){
+     console.log("Could not update");
+   }
+   io.to(data.id).emit('code-received',(data.code));
+   }
 
-
-  socket.on('enter-page', (data) => {
-   const userID = socket.id;
-   let isFirstUser = (!data.users).length;
-
-   console.log(isFirstUser);
-   const role = isFirstUser ? 'teacher' : 'student';
-   socket.emit('role-assigned',(role));
-   console.log((data.users).length);
-  })
+  //console.log(}data);
   
+
+
+  socket.on('enter-page', handeEnterPage);
+    function handeEnterPage(data){
+      const userID = socket.id;
+      var isFirstUser
+      if(mentors[data.id] == null ){
+        isFirstUser = true;
+        mentors[data.id] = userID;
+        
+      }
+      else{
+       isFirstUser = false;
+       
+      } 
+      socket.join(data.id);
+      console.log("User joined room " + data.id);
+      io.emit('enter-page',isFirstUser);
+     
+   console.log(`is first user? : ${isFirstUser}`);
+   socket.off('enter-page' ,handeEnterPage);
    
- });
+   //const role = isFirstUser ? 'teacher' : 'student';
+   /* socket.emit('role-assigned',(role));
+   console.log(`users count: ${data.users.length}`); */
+  }
+
+  
+ })
+ 
   async function getCodeBlockByID(_id){
  try{
   const codeblock = await CodeBlock.findOne({id:_id});
@@ -84,7 +115,6 @@ app.get('/lobby', async (req, res) => {
 app.get('/codeblock/:id', async (req, res) => {
   try {
     const  _id  = req.params.id;
-    console.log(_id);
     const codeblock = await getCodeBlockByID(_id);
     res.json(codeblock); 
   } catch (error) {
@@ -96,4 +126,6 @@ app.get('/codeblock/:id', async (req, res) => {
 
 server.listen(5000,()=>{
     console.log("Server is running");
-})
+}
+ )
+ 
