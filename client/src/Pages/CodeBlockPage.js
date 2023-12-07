@@ -3,6 +3,10 @@ import TextField from '@mui/material/TextField';
 import io from 'socket.io-client';
 import { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import './CodeBlockPage.css';
+import MonacoEditor from 'react-monaco-editor';
+import Editor from '@monaco-editor/react';
+
 
 
 function CodeBlockPage({socket}) {
@@ -46,29 +50,30 @@ function CodeBlockPage({socket}) {
     socket.emit('code-update',{ code ,id});
   },[code]);
 
+  //using monaco editor
   return (
     <div>
      <h1>
       {dataObject.title}</h1>
      
-     <div className="textfields">
-      <TextField
-        InputProps={{
-      readOnly: isMentor
-       }} 
-       id="standard-textarea"
-       label="Code"
-       placeholder="Placeholder"
-       multiline
-       variant="filled"
-       value={codeReceived}
-       onChange={(event)=>{
-        setCode(event.target.value);
-        
-    }}
+       
+      <div className="monaco-editor-container">
+      <Editor
+        width="100%"
+        height="100vh" 
+        language="javascript" 
+        theme="vs-dark" 
+        options={{
+          readOnly: isMentor,
+          minimap: {
+            enabled: false,
+          },
+        }}
+        value={codeReceived}
+        onChange={(value) => {
+          setCode(value);
+        }}
       />
-      
-
     </div>
    </div>
   )
