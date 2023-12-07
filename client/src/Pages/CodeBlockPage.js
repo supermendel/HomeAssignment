@@ -4,7 +4,6 @@ import io from 'socket.io-client';
 import { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './CodeBlockPage.css';
-import MonacoEditor from 'react-monaco-editor';
 import Editor from '@monaco-editor/react';
 
 
